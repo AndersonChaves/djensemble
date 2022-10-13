@@ -1,2 +1,23 @@
-# djensemble
-Repository for DJEnsemble Algorithm
+# DJEnsemble: a Cost-Based Selection and Allocation of a Disjoint Ensemble of Spatio-temporal Models
+
+This is a Python implementation of the Algorithm DJEnsemble in the following paper:
+Rafael Pereira, Yania Souto, Anderson Chaves, Rocio Zorilla, Brian Tsan, Florin Rusu, Eduardo Ogasawara, Artur Ziviani, Fabio Porto, SSDBM 2021.
+
+## Requirements
+- dtw==1.4.0
+- dtw_python==1.1.12
+- gldpy==0.2
+- h5py==3.6.0
+- matplotlib==3.1.2
+- numpy==1.17.4
+- pandas==0.25.3
+- ray==1.12.0
+- scikit_learn==1.1.2
+- tensorflow==2.7.0
+- xarray==0.20.2
+
+Dependencies can be installed using the following command:
+
+```bash
+pip install -r requirements.txt
+```
