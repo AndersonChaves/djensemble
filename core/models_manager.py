@@ -75,7 +75,6 @@ class ModelsManager():
             print("No models loaded. Inform models directory and run function load_models")
             raise(Exception)
         for learner in all_learners:
-            #learner = ray.get(learner_id)
             name = learner.get_name()
             if name == model_name:
                 return learner
