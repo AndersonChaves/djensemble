@@ -1,7 +1,8 @@
 # DJEnsemble: a Cost-Based Selection and Allocation of a Disjoint Ensemble of Spatio-temporal Models
 
 This is a Python implementation of the Algorithm DJEnsemble in the following paper:
-Rafael Pereira, Yania Souto, Anderson Chaves, Rocio Zorilla, Brian Tsan, Florin Rusu, Eduardo Ogasawara, Artur Ziviani, Fabio Porto, SSDBM 2021.
+Rafael Pereira, Yania Souto, Anderson Chaves, Rocio Zorilla, Brian Tsan, Florin Rusu, Eduardo Ogasawara, Artur Ziviani, Fabio Porto
+[DJEnsemble: a Cost-Based Selection and Allocation of a Disjoint Ensemble of Spatio-temporal Models](https://dl.acm.org/doi/10.1145/3468791.3468806) SSDBM 2021.
 
 ## Requirements
 - dtw==1.4.0
