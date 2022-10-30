@@ -24,3 +24,10 @@ Dependencies can be installed using the following command:
 ```bash
 pip install -r requirements.txt
 ```
+
+The projet should be run from main.py, informing the configuration file.
+The example selects the best ensemble for a set of three models trained on the alerta-rio dataset:
+
+```bash
+python main.py queries/query-alerta-rio.config
+```
