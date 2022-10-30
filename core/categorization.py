@@ -61,7 +61,7 @@ def expand_tile(tiling: np.array, clustering: np.array, start: tuple, tile_id, m
                     break
                 elif clustering[cursor] != tile_cluster:
                     if current_impurity == max_impurity:
-                        end = end[0], end[1] - 1
+                        end = end[0], end[1] - 1 # Undo Expantion
                         updates=False
                         break
                     else:
@@ -162,16 +162,6 @@ def create_tiling(clustering: np.array):
                 tile_id += 1
             y += 1
         x += 1
-    tiling = [[0, 0, 0, 0, 1, 1, 1],
-              [0, 0, 0, 0, 1, 1, 1],
-              [0, 0, 0, 0, 1, 1, 1],
-              [0, 0, 0, 0, 1, 1, 1],
-              [0, 0, 0, 0, 1, 1, 1],
-              [3, 3, 3, 3, 3, 3, 3],
-              [3, 3, 3, 3, 3, 3, 3]]
-    tile_dict = {1: {'start': (5, 0), 'end': (6, 6)},
-                 2: {'start': (0, 0), 'end': (4, 3)},
-                 3: {'start': (0, 4), 'end': (4, 6)},}
     return tiling, tile_dict
 
 def calculate_gld_list_from_dataset(target_dataset):
@@ -206,7 +196,7 @@ def calculate_gld_list_from_dataset(target_dataset):
 
 def cluster_dataset(target_dataset):
     gld_list = calculate_gld_list_from_dataset(target_dataset)
-
+    normalize_gld_list(gld_list)
     # Cluster using k-means into n clusters
     number_of_clusters = 1
     best_silhouete = -2
@@ -221,6 +211,14 @@ def cluster_dataset(target_dataset):
     print("KMeans best clustering: ", kmeans_best_clustering)
     print("KMeans best silhouete: ", best_silhouete)
     return gld_list, kmeans_best_clustering
+
+def normalize_gld_list(gld_list):
+    for att in range(4):
+        max_value = max(gld_list[:, att])
+        scale_factor = 100 / max_value if max_value != 0 else 0
+        for i, el in enumerate(gld_list):
+            gld_list[i, att] = el[att] * scale_factor
+    return gld_list
 
 def calculate_centroid(clustering, start, end):
     tile_glds = clustering[start[0]:end[0]+1, start[1]:end[1]+1]
@@ -241,7 +239,7 @@ def categorize_dataset(target_dataset):
     clustering_reshaped = np.reshape(kmeans_best_clustering, newshape=(lat, long))
     tiling, tile_dict = create_tiling(clustering_reshaped)
     print_array([clustering_reshaped, tiling])
-
+    save_clustering(clustering_reshaped)
     tile_dim_dict = {}
     for tile_id, value in tile_dict.items():
         tile_dim_dict[tile_id] = {}
@@ -253,6 +251,8 @@ def categorize_dataset(target_dataset):
                                                                 start, end)
     return tile_dim_dict
 
+def save_clustering(clustering):
+    np.save("results/clustering.npy", clustering)
 
 def test_1():
     tiling = np.full((5, 5), -1)
@@ -295,7 +295,18 @@ def test_tiling():
                            [1, 0, 1, 0, 0]])
     create_tiling(clustering)
 
-
+def custom_made_tiling():
+    tiling = [[0, 0, 0, 0, 1, 1, 1],
+              [0, 0, 0, 0, 1, 1, 1],
+              [0, 0, 0, 0, 1, 1, 1],
+              [0, 0, 0, 0, 1, 1, 1],
+              [0, 0, 0, 0, 1, 1, 1],
+              [3, 3, 3, 3, 3, 3, 3],
+              [3, 3, 3, 3, 3, 3, 3]]
+    tile_dict = {1: {'start': (5, 0), 'end': (6, 6)},
+                 2: {'start': (0, 0), 'end': (4, 3)},
+                 3: {'start': (0, 4), 'end': (4, 6)}, }
+    return tiling, tile_dict
 
 def test_categorization():
     array = DatasetManager().synthetize_dataset(shape=(10, 10, 10))
