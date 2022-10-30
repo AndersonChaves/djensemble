@@ -16,25 +16,27 @@ def run(query_configurations_path):
     config = ConfigurationManager(query_configurations_path)
     djensemble = DJEnsemble(config)
     ds = DatasetManager().loadDataset(config.get_configuration_value("dataset_path"))
+    ds = ds[:24*12, :128, :128]
 
     clustering_period = eval(config.get_configuration_value("clustering_period"))
     online_period     = eval(config.get_configuration_value("online_period"))
     query_region      = eval(config.get_configuration_value("query_region"))
-    target_attribute       = config.get_configuration_value("target_attribute")
+    target_attribute  = config.get_configuration_value("target_attribute")
 
-    clustering_dataset = DatasetManager().filter_by_date(ds, *clustering_period)
-    validation_dataset = DatasetManager().filter_by_date(ds, *online_period)
-    djensemble.run_offline_step(clustering_dataset.to_array(dim='target_attribute')[0, ...])
-    result, result_by_tile = djensemble.run_online_step(validation_dataset.to_array(dim=target_attribute)[0, ...],
-                                                        query_region)
+    clustering_dataset = ds # DatasetManager().filter_by_date(ds, *clustering_period)
+    validation_dataset = ds # DatasetManager().filter_by_date(ds, *online_period)
+    djensemble.run_offline_step(ds)#clustering_dataset.to_array(dim='target_attribute')[0, ...])
+    result, result_by_tile = djensemble.run_online_step(ds, query_region) #validation_dataset.to_array(dim=target_attribute)[0, ...],
+
+
     print("DJEnsemble:", result, result_by_tile )
     end = print_time()
     print("Total time: ", end - start, " seconds")
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Please inform the query configurations file path.\n")
-        exit(1)
-    query_configurations_path = sys.argv[1]
-    #query_configurations_path = "queries/query-alerta-rio.config"
+    #if len(sys.argv) < 2:
+    #    print("Please inform the query configurations file path.\n")
+    #    exit(1)
+    #query_configurations_path = sys.argv[1]
+    query_configurations_path = "queries/query-radar-france.config"
     run(query_configurations_path)

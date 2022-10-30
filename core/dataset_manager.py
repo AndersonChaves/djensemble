@@ -25,12 +25,14 @@ class DatasetManager:
         return data
 
     def loadDataset(self, dataPath):
-        if os.path.isfile(dataPath):
-            ds = xr.load_dataset(dataPath)
-            ds = ds.sortby('time')
-        else:
+        if not os.path.isfile(dataPath):
             print("Data Path " + dataPath + "is empty.")
             raise()
+        if dataPath[-4:] == '.npy':
+            ds = np.load(dataPath)
+        else:
+            ds = xr.load_dataset(dataPath)
+            ds = ds.sortby('time')
         return ds
 
     def filter_by_date(self, ds, lower_date, upper_date):
