@@ -178,7 +178,7 @@ def calculate_gld_list_from_dataset(target_dataset):
         for j in range(long):
             cut_start, cut_ending = 0, time
 
-            X, _ = SeriesGenerator().split_series_into_tumbling_windows(
+            X, _ = SeriesGenerator().split_series_into_sliding_windows(
                 target_dataset[cut_start:cut_ending, i, j], time, n_steps_out=0)
             X = X.reshape((len(X[0])))
             # gld = GLD('RS')
