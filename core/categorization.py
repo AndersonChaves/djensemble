@@ -30,7 +30,8 @@ def create_tiles_dictionary_mock(shape):
     d[3] = {"lat": (floor(lat / 2)    , ceil(lat / 2)), "long": (floor(long / 2), ceil(long / 2))}
     return d
 
-def expand_tile(tiling: np.array, clustering: np.array, start: tuple, tile_id, max_impurity = 2):
+def expand_tile(tiling: np.array, clustering: np.array, start: tuple,
+                tile_id, max_impurity_rate = 0.1):
     impurity = 0
 
     lat, long = clustering.shape
@@ -41,6 +42,7 @@ def expand_tile(tiling: np.array, clustering: np.array, start: tuple, tile_id, m
     dir_remaining = 4
     directions = cycle([(1, 0), (0, 1), (-1, 0), (0, -1)])
     skip_list = []
+    max_impurity = 1
     for dir_step in directions:
         if len(skip_list) == 4:
             break
@@ -142,6 +144,9 @@ def expand_tile(tiling: np.array, clustering: np.array, start: tuple, tile_id, m
             updates = False
         if updates:
             impurity = current_impurity
+            tile_size = (abs(start[0] - end[0])+1) * (abs(start[1] - end[1])+1)
+            max_impurity = round((tile_size*max_impurity_rate), 0)
+            skip_list = []
         else:
             skip_list.append(dir_step)
             dir_remaining -= 1
@@ -173,10 +178,11 @@ def calculate_gld_list_from_dataset(target_dataset):
         for j in range(long):
             cut_start, cut_ending = 0, time
 
-            X, _ = SeriesGenerator().split_series_into_set_of_fixed_size_series(
+            X, _ = SeriesGenerator().split_series_into_tumbling_windows(
                 target_dataset[cut_start:cut_ending, i, j], time, n_steps_out=0)
             X = X.reshape((len(X[0])))
             # gld = GLD('RS')
+            # gld = GLD('GPD')
             gld = GLD('FMKL')
             # param_MM = gld.fit_MM(X, [0.5, 1], bins_hist=20, maxiter=1000, maxfun=1000)
             indexes = np.array((range(len(X))))
